@@ -1,0 +1,32 @@
+<%= (error_messages_for 'game').gsub(/Content type/, 'Content type (File:)') %>
+
+<!--[form:game]-->
+
+<p><label for="game_name">Name:</label><br/>
+<%= form[0].text_field :name  %></p>
+<p><label for="game_class_name">Class:</label><br/>
+<%= form[0].text_field :class_name %></p>
+<p><label for="game_filename">File:</label>
+<%= @game.send(Game.content_columns.find {|c| c.human_name == 'Filename'}.name) %><br/>
+<%= form[0].file_field :uploaded_data %></p>
+
+<h3>Involves these Players:</h3>
+
+<!-- list players already associated with this game -->
+<% for player in @game.players %>
+  <% fields_for form[1], player do |p| %>
+    <p><label>Player Name</label> <%= p.text_field :name  %>
+    <label>Required?</label> <%= p.select :required, [['Yes', true], ['No', false]] %></p>
+  <% end %>
+<% end %>
+
+<!-- allow up to 5 new players to be added -->
+<% 5.times do %>
+  <% fields_for "newplayer[]", @game.players.build do |p| %>
+    <p><label>Player Name</label> <%= p.text_field :name  %>
+    <label>Required?</label> <%= p.select :required, [['Yes', true], ['No', false]]  %></p>
+  <% end %>
+<% end %>
+
+<!--[eoform:game]-->
+

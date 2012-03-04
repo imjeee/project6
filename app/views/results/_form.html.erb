@@ -1,0 +1,18 @@
+<%= error_messages_for 'result' %>
+
+<!--[form:match]-->
+
+<p><b>Game: </b><%= link_to @game.name, :controller => :games, :action => :show, :id => @game.id %><br/>
+<%= hidden_field 'result', 'game_id', :value=>@game.id %></p>
+
+<% for player in @game.players %>
+  <% fields_for "player[#{player.id}]", Agent.new do |p| %>
+  <p><label for="result_agents_id"><b><%= player.name %>:</b></label>
+  <%= p.select :id, @game.agents.collect {|p| [ p.name, p.id ] }, {:prompt => 'Select Agent'} %>
+  <%= " <i>required</i>" if player.required? %>
+  </p>
+  <% end %>
+<% end %>
+
+<!--[eoform:match]-->
+

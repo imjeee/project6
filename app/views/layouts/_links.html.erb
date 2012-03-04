@@ -1,0 +1,20 @@
+<p>
+<span style="float:right">
+<%= link_to 'Logout', :logout unless !logged_in? %>
+<%= link_to 'Login', :login unless logged_in? %>
+</span>
+<% if logged_in? %>
+  <%= link_to 'My Games', :controller => :games, :action => :index,
+                                     :filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login %>
+  | <%= link_to 'My Agents', :controller => :agents, :action => :index,
+                                         :filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login %>
+  | <%= link_to 'My Results', :controller => :results, :action => :index, 
+                                          :filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login %>
+  | 
+<% end %>	
+<%= link_to 'All Games', :controller => :games, :action => :index %>
+| <%= link_to 'All Agents', :controller => :agents, :action => :index %>
+| <%= link_to 'All Results', :controller => :results, :action => :index %>
+</p>
+
+

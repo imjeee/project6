@@ -1,0 +1,53 @@
+<h1>Game Details</h1>
+
+<% blocked_cols = ['Size', 'Content type'] %>
+<% for column in Game.content_columns %>
+  <% unless blocked_cols.member?(column.human_name) %>
+    <table><tr><td align="left"><b><%= column.human_name %>:</b></td>
+    <% case column.human_name
+      when "Name" %>
+        <td><%= @game.send(column.name) %></td>
+        <td><%= button_to 'Play', :controller => 'results', :action => 'new', :id => @game %></td></table>
+        <table><tr><td><b>User:</b></td>
+        <td><%= @game.user.login %></td>
+      <% when "Filename" %>
+        <% if current_user.id == @game.user.id %>
+          <td><%= link_to @game.send(column.name), :action => 'download_source_code', :id => @game %></td>
+          <td> | <%= link_to 'Edit source code', :action => 'edit_source_code', :id => @game %></td>
+        <% else %>
+          <td><%= @game.send(column.name) %></td>
+        <% end %>
+      <% else %>
+        <td><%= @game.send(column.name) %></td>
+    <% end %>
+    </tr></table>
+  <% end %>
+<% end %>
+
+<table><tr><td><b>Players:</b></td></tr></table>
+<ul>
+<% for player in @game.players %>
+  <li><%= player.name %><%= "<i> required</i>" if player.required %></li>
+<% end %>
+</ul>
+
+<table><tr>
+<td><b>Agents:</b></td>
+<td><%= link_to 'List',{:controller => :agents, :action => 'index', :filter_type => 'Game', :filter_id => @game.id, :filter_name => @game.name} %></td>
+</tr></table>
+
+<table><tr>
+<td><b>Results:</b></td>
+<td><%= link_to 'List',{:controller => :results, :action => 'index', :filter_type => 'Game', :filter_id => @game.id, :filter_name => @game.name} %></td>
+</tr></table>
+
+<% if current_user.id == @game.user.id %>
+  <p>
+  <table><tr>
+  <td><%= link_to 'Edit', :action => 'edit', :id => @game %> | </td>
+  <td><%= button_to 'Destroy', {:action => 'destroy', :id => @game, 
+                                             :filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login}, 
+                              :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr></table>
+<% end %>
+

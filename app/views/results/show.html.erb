@@ -1,0 +1,32 @@
+<h1>Result Details</h1>
+
+<p><b>Result ID:&nbsp</b><%= @result.id %></p>
+
+<p><b>User:&nbsp</b><%= @result.user.login %></p>
+
+<p><b>Created at:&nbsp</b><%=h @result.created_at %></p>
+
+<p><b>Game:</b> <%= link_to @result.game.name, :controller => 'games', :action => 'show', :id => @result.game %></p>
+
+<ul>
+<% for participant in @result.participants %>
+  <li><b><%=participant.player.name%>:</b> 
+            <%= link_to participant.agent.name, :controller => :agents, :action => :show, :id => participant.agent.id %>
+            <ul>
+            <%= "<li><b>Result:</b> #{participant.result}</li>" unless participant.result.nil? %>
+            <%= "<li><b>Winner:</b> #{participant.winner}</li>" unless participant.winner.nil? %>
+            <%= "<li><b>Score:</b> #{participant.score}</li>" unless participant.score.nil? %>
+            <%= "<li><b>Saved:</b> #{participant.saved}</li>" unless participant.saved.nil? %>
+            </ul></li>
+<% end %>
+</ul>
+<p><b>Result:&nbsp</b><%=h @result.result  %></p>
+<p><b>Saved:&nbsp</b><%=h @result.saved.inspect %></p>
+<% if current_user.id == @result.user.id %>
+  <p>
+  <%= button_to 'Destroy', 
+	                      {:action => 'destroy', :id => @result, 
+													:filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login}, 
+                        {:confirm => 'Are you sure?', :method => :delete} %>
+  </p>
+<% end %>

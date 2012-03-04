@@ -1,0 +1,9 @@
+<h1>Editing agent</h1>
+
+<% form_for(:agent, :url => {:controller => :agents, :action => :update, :id => @agent},
+                            :html => { :multipart => true, :method => :put }) do |f| -%>
+  <%= render(:partial => 'form', :object => [f, 'agent_game'])%>
+  <%= submit_tag "Update", :onclick => "return confirm('Are you sure?')" %>
+<% end %>
+<br/>
+<%= link_to 'Show', :action => 'show', :id => @agent %>

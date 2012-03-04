@@ -1,0 +1,47 @@
+<h1>Agent Details</h1>
+
+<% blocked_cols = ['Size', 'Content type'] %>
+<% for column in Agent.content_columns %>
+  <% unless blocked_cols.member?(column.human_name) %>
+    <table><tr><td align="left"><b><%= column.human_name %>:</b></td>   
+    <% case column.human_name
+      when "Name" %>
+        <td><%= @agent.send(column.name) %></td></tr></table>
+        <table><tr><td><b>User:</b></td>
+        <td><%= @agent.user.login %></td>
+      <% when "Filename" %>
+        <% if current_user.id == @agent.user.id %>
+          <td><%= link_to @agent.send(column.name), :action => 'download_source_code', :id => @agent %></td>
+          <td> | <%= link_to 'Edit source code', :action => 'edit_source_code', :id => @agent %></td>
+        <% else %>
+          <td><%= @agent.send(column.name) %></td>
+        <% end %>
+      <% else %>
+        <td><%= @agent.send(column.name) %></td>
+    <% end %>
+    </tr></table>
+  <% end %>
+<% end %>
+
+<table><tr><td><b>Can Play:</b></td></tr></table>
+<ul>
+<% for game in @agent.games %>
+  <li><%= link_to game.name, :controller => :games, :action => :show, :id => game.id %></li>
+<% end %>
+</ul>
+
+<table><tr>
+<td><b>Results:</b></td>
+<td><%= link_to 'List',{:controller => :results, :action => 'index', :filter_type => 'Agent', :filter_id => @agent.id, :filter_name => @agent.name} %></td>
+</tr></table>
+
+<% if current_user.id == @agent.user.id %>
+  <p><table><tr>
+  <td><%= link_to 'Edit', :action => 'edit', :id => @agent %> | </td>
+  <td><%= button_to 'Destroy', {:action => 'destroy', :id => @agent,
+                                             :filter_type => 'User', :filter_id => current_user.id, :filter_name => current_user.login},
+                                :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr></table>
+<% end %>
+
+

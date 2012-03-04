@@ -1,0 +1,9 @@
+<h1><%= "Editing Source Code for Agent: #{@agent.name}" %></h1>
+
+<% form_tag :action => :update_source_code, :id => @agent.id do %>
+  <br />
+  <%= text_area_tag :source_code, @code, :cols => 80, :rows => 35 %>
+	<br /><br />
+  <%= link_to 'Details', :action => 'show', :id => @agent %> | 
+	<%= submit_tag 'Update Code', :onclick => "return confirm('Are you sure?')" %>
+<% end %>

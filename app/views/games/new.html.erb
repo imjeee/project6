@@ -1,0 +1,9 @@
+<h1>New game</h1>
+
+<% form_for(:game, :url => {:controller => "games", :action => "create"},
+                            :html => { :multipart => true }) do |f| %>
+  <%= render(:partial => 'form', :object => [f, 'newplayer[]'])%>
+  <%= submit_tag "Create" %>
+<% end %>
+<br/>
+<%= link_to 'Back', :action => 'index' %>

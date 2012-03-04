@@ -1,0 +1,33 @@
+<%= (error_messages_for 'agent').gsub(/Content type/, 'Content type (File:)') %>
+
+<!--[form:agent]-->
+
+<p><label for="agent_name">Name</label><br/>
+<%= form[0].text_field :name  %></p>
+<p><label for="agent_class_name">Class:</label><br/>
+<%= form[0].text_field :class_name %></p>
+<p><label for="agent_filename">File:</label>
+<%= @agent.send(Agent.content_columns.find {|c| c.human_name == 'Filename'}.name) %><br/>
+<%= form[0].file_field :uploaded_data %></p>
+
+<h3>Can play these Games</h3>
+
+<!-- list games already associated with this agent -->
+<% for agent_game in @agent.agents_games %>
+  <% fields_for (form[1] + "[#{agent_game.game_id}]"), agent_game do |p| %>
+    <p><label>Game</label>
+    <%= p.select :game_id, Game.find(:all).collect {|p| [ p.name, p.id ] }, {:include_blank => true} %>
+  <% end %>
+  </p>
+<% end %>
+
+<!-- allow up to 5 new game references to be added -->
+<% 5.times do %>
+  <% fields_for "newagent_game[]", @agent.agents_games.build do |p| %>
+    <p><label>Game</label>
+    <%= p.select :game_id, Game.find(:all).collect {|p| [ p.name, p.id ] }, {:include_blank => true} %>
+  </p>
+  <% end %>
+<% end %>
+
+<!--[eoform:agent]-->

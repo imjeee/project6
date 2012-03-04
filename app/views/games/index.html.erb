@@ -1,0 +1,45 @@
+<h1><%= @title %></h1>
+
+<table>
+  <tr>
+	  <th></th>
+    <% for column in Game.content_columns %>
+      <% unless column.human_name == "Size" or column.human_name == "Content type" %>
+	      <th><%= column.human_name %></th>
+		    <%= "<th>User</th>" if column.human_name == "Name" %>
+      <% end %>
+    <% end %>
+  </tr>
+
+<% for game in @games %>
+  <tr>
+    <td><%= button_to 'Play', :controller => 'results', :action => 'new', :id => game %></td>
+    <% for column in Game.content_columns %>
+      <% case column.human_name
+        when "Name" %>
+          <td><%= link_to game.send(column.name), :action => 'show', :id => game %></td>
+          <td><%= game.user.login %></td>
+        <% when "Filename" %>
+          <% if current_user.id == game.user.id %>
+            <td><%= link_to game.send(column.name), :action => 'download_source_code', :id => game %></td>
+          <% else %>
+            <td><%= game.send(column.name) %></td>
+          <% end %>
+        <% when "Size", "Content type" %>
+        <% else %>
+          <td><%= game.send(column.name) %></td>
+      <% end %>
+    <% end %>
+    <td> | <%= link_to 'Results',{:controller => :results, :action => 'index', :filter_type => 'Game', :filter_id => game.id, :filter_name => game.name} %> </td>
+    <% if current_user.id == game.user.id %><td> | </td><td>
+		  <%= button_to 'Destroy', {:action => 'destroy', :id => game, 
+																						:filter_type => @filter[:type], :filter_id => @filter[:id], :filter_name => @filter[:name]}, 
+														:confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<hr/>
+<%= will_paginate @games %>
+<hr/>

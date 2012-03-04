@@ -1,0 +1,47 @@
+<h1><%= @title %></h1>
+
+<table>
+  <tr>
+    <% for column in Agent.content_columns %>
+      <% unless column.human_name == "Size" or column.human_name == "Content type" %>
+	      <th><%= column.human_name %></th>
+		    <%= "<th>User</th>" if column.human_name == "Name" %>
+      <% end %>
+    <% end %>
+  </tr>
+  
+<% for agent in @agents %>
+  <tr>
+    <% for column in Agent.content_columns %>
+      <% case column.human_name
+        when "Name" %>
+          <td><%= link_to agent.send(column.name), :action => 'show', :id => agent %></td>
+          <td><%= agent.user.login %></td>
+        <% when "Filename" %>
+          <% if current_user.id == agent.user.id %>
+            <td><%= link_to agent.send(column.name), :action => 'download_source_code', :id => agent %></td>
+          <% else %>
+            <td><%= agent.send(column.name) %></td>
+          <% end %>
+        <% when "Size", "Content type" %>
+        <% else %>
+          <td><%= agent.send(column.name) %></td>
+      <% end %>
+    <% end %>
+    <td> | <%= link_to 'Results',{:controller => :results, :action => 'index', :filter_type => 'Agent', :filter_id => agent.id, :filter_name => agent.name} %> </td>
+    <% if current_user.id == agent.user.id or current_user.id == 1 %><td> 
+| </td><td>
+		  <%= button_to 'Destroy', {:action => 'destroy', :id => agent,
+                                            :filter_type => @filter[:type], :filter_id => @filter[:id], :filter_name => @filter[:name]},
+                            :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<hr/>
+<%= will_paginate @agents %>
+<hr/>
+
+
+

@@ -1,0 +1,8 @@
+<h1>Play <%= @game.name %>: Select Agents</h1>
+
+<% form_tag :action => 'create' do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Start" %>
+<% end %>
+<br/>
+<%= link_to 'Back', results_path %>

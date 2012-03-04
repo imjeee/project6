@@ -1,0 +1,35 @@
+<!--Listing Results-->
+
+<h1><%= @title %></h1>
+
+<table>
+  <tr>
+  <th>ID</th>
+  <th>Game</th>
+  <th>User</th>
+  <% for column in Result.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for result in @results %>
+  <tr>
+  <td><%= link_to "#{result.id}", :action => 'show', :id => result %></td>
+  <td><%= link_to result.game.name, :controller => :games, :action => :show, :id => result.game.id %></td>
+  <td><%= result.user.login %></td>
+  <% for column in Result.content_columns %>
+    <td><%=h result.send(column.name) %></td>
+  <% end %>
+    <% if logged_in? and current_user.id == result.user.id %>
+      <td><%= button_to 'Destroy', {:action => 'destroy', :id => result, 
+                                                 :filter_type => @filter[:type], :filter_id => @filter[:id], :filter_name => @filter[:name]}, 
+                                  :confirm => 'Are you sure?', :method => :delete %></td>
+    <% end %>
+  </tr>
+<% end %>
+</table>
+
+<hr/>
+<%= will_paginate @results %>
+<hr/>
+

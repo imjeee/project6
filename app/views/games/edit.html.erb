@@ -1,0 +1,10 @@
+<h1>Edit game</h1>
+
+<% form_for(:game, :url => {:controller => "games", :action => :update, :id => @game},
+                            :html => { :multipart => true, :method => :put }) do |f| %>
+  <%= render(:partial => 'form', :object => [f, 'player[]'])%>
+  <%= submit_tag "Update", :onclick => "return confirm('Are you sure?')" %>
+<% end %>
+<p>
+<%= link_to 'Show', :action => 'show', :id => @game %>
+</p>
